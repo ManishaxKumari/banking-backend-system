@@ -1,10 +1,11 @@
-//its has 2 task to create a server instance and config the server ,
-// means which type of api and middleware we want to use in our server and 
-// then export the app to use it in other file like index.js where we will start the server by listening on a port
-//server start yaha nhi hota-> vo server.js file ma hota hai
-
 const express = require('express');
-const app = express();
+const authRoutes=require("./routes/auth.routes")
+const cookieParser=require("cookie-parser")
+const app = express()
+
+app.use(express.json()) //middleware to parse json data
+app.use(cookieParser()) //middleware to parse cookies
+app.use("/api/auth",authRoutes) //auth routes ko use karenge
 module.exports = app; 
 
 
