@@ -41,6 +41,7 @@ async function userRegisterController(req,res){
         token
     })
 }
+<<<<<<< HEAD
 /**
  * - userLoginController
  * - POST /api/auth/login
@@ -83,3 +84,7 @@ async function userLoginController(req,res){
 }
 
 module.exports={userRegisterController,userLoginController}
+=======
+
+module.exports={userRegisterController}
+>>>>>>> b537b83e6b99cf8049c818c14c761facd9bb7f00
