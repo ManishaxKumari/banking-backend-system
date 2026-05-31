@@ -1,6 +1,7 @@
 const mongoose=require("mongoose")
 const bcrypt=require("bcryptjs")
 
+
 const userSchema= new mongoose.Schema({
     email:{
         type:String,
@@ -33,3 +34,10 @@ userSchema.pre("save",async function(next){ //pre save hook lagayenge jisse pass
     return next() //next kar denge
 })
 
+userSchema.methods.comparePassword=async function(password){ //password compare karne ke liye method banayenges 
+    return await bcrypt.compare(password,this.password) //password ko compare karenge
+}
+
+const userModel=mongoose.model("User",userSchema) //model banayenge
+
+module.exports=userModel //model ko export kar denge
