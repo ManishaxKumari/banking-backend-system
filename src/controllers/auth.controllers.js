@@ -24,7 +24,10 @@ async function userRegisterController(req,res){
         password,
         name
     })
-
+        await emailService.sendRegistrationEmail(
+        user.email,
+        user.name
+    )
     const token=jwt.sign({userId:user._id},process.env.JWT_SECRET,{
         expiresIn:"3d"
     })
@@ -82,7 +85,7 @@ async function userLoginController(req,res){
         token
     })
 
-    await emailService.sendRegistrationEmail(user.email,user.name) //registration email bhejenge
+    // await emailService.sendRegistrationEmail(user.email,user.name) //registration email bhejenge
 }
 
 module.exports={userRegisterController,userLoginController}

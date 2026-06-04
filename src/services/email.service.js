@@ -25,6 +25,8 @@ transporter.verify((error, success) => {
 // Function to send email
 const sendEmail = async (to, subject, text, html) => {
   try {
+    console.log("Attempting to send email to:", to);
+
     const info = await transporter.sendMail({
       from: `"BANK BACKEND" <${process.env.EMAIL_USER}>`, // sender address
       to, // list of receivers
@@ -41,6 +43,10 @@ const sendEmail = async (to, subject, text, html) => {
 };
 
 async function sendRegistrationEmail(userEmail, userName) {
+  console.log("=== EMAIL FUNCTION CALLED ===");
+  console.log("Email:", userEmail);
+  console.log("Name:", userName);
+
   const subject = 'Welcome to BANK BACKEND!';
   const text = `Hello ${userName},\n\nThank you for registering with BANK BACKEND. We're excited to have you on board!\n\nBest regards,\nBANK BACKEND Team`;
   const html = `<p>Hello ${userName},</p><p>Thank you for registering with <strong>BANK BACKEND</strong>. We're excited to have you on board!</p><p>Best regards,<br>BANK BACKEND Team</p>`;
