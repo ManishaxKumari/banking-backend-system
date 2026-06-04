@@ -17,11 +17,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-<<<<<<< HEAD
     "mongoose": "^9.6.3",
     "nodemailer": "^8.0.10"
-=======
-    "mongoose": "^9.6.3"
->>>>>>> b537b83e6b99cf8049c818c14c761facd9bb7f00
   }
 }
