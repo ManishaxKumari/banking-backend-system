@@ -9,7 +9,7 @@ const userSchema= new mongoose.Schema({
         trim:true, //agar user email me space de to usko trim kar denge
         lowercase:true, //agar user email me capital letter de to usko lowercase kar denge
         match:[/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,"Please fill a valid email address"],
-        unique:[true,"email already exists"]
+        unique:[true,"email already exists"] //create unique index on email field to ensure uniqueness
     },
     name:{
         type:String,
