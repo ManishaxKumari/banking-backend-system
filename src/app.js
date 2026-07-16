@@ -1,6 +1,6 @@
 const express = require('express');
 const cookieParser=require("cookie-parser")
-
+const cors = require("cors")
 const app = express()
 
 app.use(express.json()) 
@@ -8,7 +8,7 @@ app.use(cookieParser())
 
 const cors = require("cors")
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "http://localhost:3001",
   credentials: true 
 }))
 /**
