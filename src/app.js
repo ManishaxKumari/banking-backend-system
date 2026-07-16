@@ -6,7 +6,6 @@ const app = express()
 app.use(express.json()) 
 app.use(cookieParser())
 
-const cors = require("cors")
 app.use(cors({
   origin: "http://localhost:3001",
   credentials: true 
