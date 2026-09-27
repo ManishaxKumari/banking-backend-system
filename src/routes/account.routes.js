@@ -28,6 +28,8 @@ router.get("/", authMiddleware.authMiddleware, accountController.getUserAccounts
  */
 router.get("/balance/:accountId", authMiddleware.authMiddleware, accountController.getAccountBalanceController)
 
+router.get("/:accountId/ledger", authMiddleware.authMiddleware, accountController.getAccountLedgerController)
+
 
 
 module.exports = router

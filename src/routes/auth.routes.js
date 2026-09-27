@@ -8,5 +8,6 @@ router.post("/register",authController.userRegisterController) //register route 
 
 /*POST /api/auth/login */
 router.post("/login",authController.userLoginController) //login route banayenge
+router.post("/logout", authController.userLogoutController)
 
 module.exports=router

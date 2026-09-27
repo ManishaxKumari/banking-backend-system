@@ -1,5 +1,5 @@
 const accountModel = require("../models/account.model");
-
+const ledgerModel = require("../models/ledger.model")
 
 async function createAccountController(req, res) {
 
@@ -46,9 +46,18 @@ async function getAccountBalanceController(req, res) {
     })
 }
 
+async function getAccountLedgerController(req, res) {
+    const { accountId } = req.params
+    const account = await accountModel.findOne({ _id: accountId, user: req.user._id })
+    if (!account) return res.status(404).json({ message: "Account not found" })
+    const entries = await ledgerModel.find({ account: accountId }).sort({ createdAt: 1 })
+    res.status(200).json({ accountId, entries })
+}
+
 
 module.exports = {
     createAccountController,
     getUserAccountsController,
-    getAccountBalanceController
+    getAccountBalanceController,
+    getAccountLedgerController
 }
