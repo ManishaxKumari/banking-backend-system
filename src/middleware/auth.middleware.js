@@ -38,6 +38,7 @@ async function authMiddleware(req, res, next) {
         })
     }
 }
+
 async function authSystemUserMiddleware(req, res, next) {
 
     const token = req.cookies.token || req.headers.authorization?.split(" ")[ 1 ]
@@ -51,7 +52,7 @@ async function authSystemUserMiddleware(req, res, next) {
     const isBlacklisted = await tokenBlackListModel.findOne({ token })
 
     if (isBlacklisted) {
-        return res.status(401).json({
+        return res.status(401).json({ //Authentication failed
             message: "Unauthorized access, token is invalid"
         })
     }
@@ -61,7 +62,7 @@ async function authSystemUserMiddleware(req, res, next) {
 
         const user = await userModel.findById(decoded.userId).select("+systemUser")
         if (!user.systemUser) {
-            return res.status(403).json({
+            return res.status(403).json({ // 403- Authentication succeeded but permission denied
                 message: "Forbidden access, not a system user"
             })
         }
