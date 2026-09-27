@@ -27,9 +27,15 @@ const accountSchema = new mongoose.Schema({
 
 accountSchema.index({ user: 1, status: 1 })
 
-accountSchema.methods.getBalance = async function () {
+// FIX: accepts an optional { session } so callers inside a Mongo transaction
+// can read the balance against that transaction's session instead of a
+// separate, unsynchronized read. This is what closes the balance-check race
+// condition in transaction.controller.js — the check now happens against the
+// same session that will perform the debit/credit writes.
+accountSchema.methods.getBalance = async function (options = {}) {
+    const { session } = options
 
-    const balanceData = await ledgerModel.aggregate([
+    const aggregateQuery = ledgerModel.aggregate([
         { $match: { account: this._id } },
         {
             $group: {
@@ -62,17 +68,19 @@ accountSchema.methods.getBalance = async function () {
         }
     ])
 
+    if (session) {
+        aggregateQuery.session(session)
+    }
+
+    const balanceData = await aggregateQuery
+
     if (balanceData.length === 0) {
         return 0
     }
 
     return balanceData[ 0 ].balance
-
 }
 
-
 const accountModel = mongoose.model("account", accountSchema)
-
-
 
 module.exports = accountModel
