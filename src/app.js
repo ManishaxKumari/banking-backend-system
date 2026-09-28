@@ -1,35 +1,30 @@
+
 const express = require('express');
-const cookieParser=require("cookie-parser")
-const app = express()
+const cookieParser = require("cookie-parser");
+const path = require("path");
 
-app.use(require("cors")())
-app.use(express.json()) 
-app.use(cookieParser())
+const app = express();
 
-/**
- * Routes 
- */
-const authRoutes=require("./routes/auth.routes")
-const accountRoutes=require("./routes/account.routes")
-const transactionRoutes=require("./routes/transaction.routes")
+// Middleware
+app.use(require("cors")());
+app.use(express.json());
+app.use(cookieParser());
 
-/**
- * - Use Routes
- */
+// Routes
+const authRoutes = require("./routes/auth.routes");
+const accountRoutes = require("./routes/account.routes");
+const transactionRoutes = require("./routes/transaction.routes");
 
+// Serve Hearth Frontend
 app.get("/", (req, res) => {
-    res.send("Ledger Service is up and running")
-})
+    res.sendFile(
+        path.join(__dirname, "..", "hearth-bank.html")
+    );
+});
 
-/**
- * Route Middlewares
- */
-app.use("/api/auth",authRoutes)
-app.use("/api/transactions",transactionRoutes)
-app.use("/api/accounts",accountRoutes)
+// API Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/transactions", transactionRoutes);
+app.use("/api/accounts", accountRoutes);
 
-
-module.exports = app; 
-
-
-
+module.exports = app;
