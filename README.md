@@ -5,10 +5,12 @@
 
 <img width="1377" height="892" alt="image" src="https://github.com/user-attachments/assets/b7021a15-254f-48ef-bee4-be8b271d6382" />
 
+# API endpoints
+<img width="832" height="572" alt="image" src="https://github.com/user-attachments/assets/3cb90244-427b-4d8c-98b2-cdfcc84db27a" />
+
 
 # 📁 Folder Structure
 
-<img width="646" height="792" alt="image" src="https://github.com/user-attachments/assets/b088cc47-c50d-4efd-913f-eaa4b25368fc" />
 
 ```text
 
