@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hearth</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--fog:#f3f5f6;--card:#fff;--ink:#16222b;--mute:#66737c;--line:#e2e7ea;--deep:#16222b;--gold:#f2b632;--green:#177a55;--red:#c2413a;
+--d:'Bricolage Grotesque',Georgia,serif;--b:'Figtree',system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--fog);color:var(--ink);font:400 15px/1.5 var(--b)}
+button,input,select{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--d);margin:0;font-weight:700;letter-spacing:-.01em}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+header .wrap{display:flex;align-items:center;gap:20px;height:60px}
+.brand{font:700 20px var(--d)}.brand i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--gold);margin-right:6px}
+nav{display:flex;gap:4px;flex:1;overflow-x:auto}
+nav button{background:none;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;color:var(--mute);font-weight:500}
+nav button.on{background:var(--fog);color:var(--ink)}
+.linkbtn{background:none;border:0;color:var(--mute);cursor:pointer;padding:6px}
+main{padding:28px 0 80px}
+.hero{background:var(--deep);color:#fff;border-radius:22px;padding:30px 32px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px;align-items:flex-end}
+.hero small{color:#aebac2;display:block;margin-bottom:6px}
+.hero .amt{font:700 clamp(38px,7vw,60px)/1 var(--d)}.hero .amt span{color:var(--gold)}
+.hero p{margin:10px 0 0;color:#aebac2}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:0;border-radius:10px;padding:11px 18px;font-weight:600;cursor:pointer;background:var(--gold);color:#221a05}
+.btn.ghost{background:transparent;border:1px solid #ffffff44;color:#fff}
+.btn.plain{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.btn.dark{background:var(--deep);color:#fff}.btn:disabled{opacity:.5;cursor:wait}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:22px 0}
+.acct{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;text-align:left;transition:border-color .15s}
+.acct:hover{border-color:var(--ink)}.acct b{font:700 24px var(--d);display:block;margin-top:14px}
+.acct .meta{display:flex;justify-content:space-between;color:var(--mute);font-size:13px}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:30px 0 10px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+.list .row{display:flex;align-items:center;gap:14px;padding:13px 4px;border-bottom:1px solid var(--line)}
+.list .row:last-child{border:0}
+.dot{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:700;flex:none;background:var(--fog)}
+.in .dot{background:#dff3ea;color:var(--green)}.out .dot{background:#f8e3e1;color:var(--red)}
+.row .t{flex:1;min-width:0}.row .t small{color:var(--mute);display:block}
+.row .v{font-weight:600;font-variant-numeric:tabular-nums}.in .v{color:var(--green)}
+.pill{font-size:12px;background:#fdf1d0;padding:1px 8px;border-radius:99px;margin-left:6px}
+label{display:block;font-size:13px;color:var(--mute);margin:14px 0 5px}
+input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chips{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:5px 14px;cursor:pointer}
+.tabs{display:flex;gap:6px;margin-bottom:6px}
+.tabs button{flex:1;padding:9px;border:0;background:var(--fog);border-radius:9px;cursor:pointer;font-weight:600;color:var(--mute)}
+.tabs button.on{background:var(--deep);color:#fff}
+#auth{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+#auth .l{background:var(--deep);color:#fff;padding:56px;display:flex;flex-direction:column;justify-content:space-between}
+#auth .l h1{font-size:clamp(30px,4vw,46px);line-height:1.1;max-width:14ch}
+#auth .l p{color:#aebac2;max-width:34ch}
+#auth .r{display:grid;place-items:center;padding:30px}#auth .box{width:100%;max-width:360px}
+#modal{position:fixed;inset:0;background:#16222b88;display:none;place-items:center;padding:16px;z-index:20}
+#modal.open{display:grid}
+.sheet{background:#fff;border-radius:18px;padding:26px;width:100%;max-width:440px;max-height:88vh;overflow:auto;animation:up .18s ease-out}
+@keyframes up{from{transform:translateY(14px);opacity:0}}
+.tick{width:64px;height:64px;border-radius:50%;background:#dff3ea;color:var(--green);display:grid;place-items:center;font-size:30px;margin:6px auto 14px}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;display:none;z-index:30;max-width:90vw}
+pre{background:#0f1a21;color:#cfe0ea;padding:12px;border-radius:10px;overflow:auto;font-size:12px;max-height:240px;white-space:pre-wrap}
+.empty{text-align:center;color:var(--mute);padding:30px 10px}
+.hide{display:none!important}
+@media(max-width:760px){#auth{grid-template-columns:1fr}#auth .l{padding:30px;gap:30px}.two{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<section id="auth" class="hide">
+  <div class="l">
+    <div class="brand"><i></i>Hearth</div>
+    <div><h1>Money that keeps a record of everything.</h1>
+    <p>Every rupee moves in two entries, one out and one in, and nothing is ever rewritten.</p></div>
+    <small style="color:#aebac2">Server: <a href="#" onclick="setBase();return false" id="baseLbl" style="color:#fff"></a></small>
+  </div>
+  <div class="r"><div class="box">
+    <div class="tabs"><button id="tSign" class="on" onclick="authMode('login')">Sign in</button><button id="tReg" onclick="authMode('register')">Create account</button></div>
+    <div id="nameRow" class="hide"><label>Full name</label><input id="aName" autocomplete="name"></div>
+    <label>Email</label><input id="aEmail" type="email" autocomplete="email">
+    <label>Password</label><input id="aPass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')authSubmit()">
+    <button class="btn dark" style="width:100%;margin-top:20px" id="aGo" onclick="authSubmit()">Sign in</button>
+  </div></div>
+</section>
+
+<div id="app" class="hide">
+  <header><div class="wrap">
+    <div class="brand"><i></i>Hearth</div>
+    <nav>
+      <button data-v="home" onclick="go('home')">Home</button>
+      <button data-v="send" onclick="go('send')">Send</button>
+      <button data-v="activity" onclick="go('activity')">Activity</button>
+      <button data-v="people" onclick="go('people')">People</button>
+      <button data-v="lab" onclick="go('lab')">Under the hood</button>
+    </nav>
+    <button class="linkbtn" onclick="signOut()">Sign out</button>
+  </div></header>
+  <main><div class="wrap" id="main"></div></main>
+</div>
+
+<div id="modal" onclick="if(event.target===this)closeModal()"><div class="sheet" id="sheet"></div></div>
+<div id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(n||0);
+const tail=id=>id?'ending '+String(id).slice(-4):'';
+const uid=()=>'k-'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+let S={token:localStorage.getItem('h_token'),user:ld('h_user',null),accounts:[],txns:[],view:'home',log:[],key:null,mode:'login'};
+const base=()=>localStorage.getItem('h_base')||'http://localhost:3000';
+
+/* ---------- helpers ---------- */
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',3800)}
+function openModal(h){$('#sheet').innerHTML=h;$('#modal').classList.add('open')}
+function closeModal(){$('#modal').classList.remove('open')}
+function setBase(){const v=prompt('Backend URL',base());if(v){localStorage.setItem('h_base',v.replace(/\/$/,''));$('#baseLbl').textContent=base()}}
+async function api(path,opts={}){
+  const h={'Content-Type':'application/json'};if(S.token)h.Authorization='Bearer '+S.token;
+  const t0=performance.now();let r;
+  try{const res=await fetch(base()+path,{...opts,headers:h});let b={};try{b=await res.json()}catch{}r={status:res.status,body:b}}
+  catch{r={status:0,body:{message:'Cannot reach the server at '+base()+'. Is it running, and is CORS enabled?'}}}
+  S.log.unshift({m:opts.method||'GET',p:path,s:r.status,ms:Math.round(performance.now()-t0)});S.log=S.log.slice(0,25);
+  if(r.status===401&&S.token&&!path.startsWith('/api/auth/')){clearSession();toast('Your session ended. Please sign in again.')}
+  return r}
+function clearSession(){S.token=null;S.user=null;localStorage.removeItem('h_token');localStorage.removeItem('h_user');showAuth()}
+const payees=()=>ld('h_payees_'+S.user?._id,[]);
+const setPayees=p=>localStorage.setItem('h_payees_'+S.user?._id,JSON.stringify(p));
+const nameFor=id=>{const p=payees().find(x=>x.id===id);if(p)return p.name;const a=S.accounts.find(x=>x._id===id);return a?'your account '+tail(id):'account '+tail(id)};
+const total=()=>S.accounts.reduce((s,a)=>s+(a.balance||0),0);
+
+/* ---------- auth ---------- */
+function showAuth(){$('#app').classList.add('hide');$('#auth').classList.remove('hide');$('#baseLbl').textContent=base()}
+function authMode(m){S.mode=m;$('#tSign').classList.toggle('on',m==='login');$('#tReg').classList.toggle('on',m==='register');
+  $('#nameRow').classList.toggle('hide',m!=='register');$('#aGo').textContent=m==='login'?'Sign in':'Create my account'}
+async function authSubmit(){
+  const name=$('#aName').value.trim(),email=$('#aEmail').value.trim(),password=$('#aPass').value,reg=S.mode==='register';
+  if(!email||!password||(reg&&!name))return toast('Please fill in every field.');
+  if(reg&&password.length<6)return toast('Choose a password with at least 6 characters.');
+  $('#aGo').disabled=true;
+  const r=await api('/api/auth/'+S.mode,{method:'POST',body:JSON.stringify(reg?{name,email,password}:{email,password})});
+  $('#aGo').disabled=false;
+  if(!r.body.token)return toast(r.body.message||'That did not work. Try again.');
+  S.token=r.body.token;S.user=r.body.user;localStorage.setItem('h_token',S.token);localStorage.setItem('h_user',JSON.stringify(S.user));
+  if(reg)await api('/api/accounts',{method:'POST'});
+  await boot();if(reg)toast('Welcome, '+S.user.name.split(' ')[0]+'. Your first account is ready.');
+}
+async function signOut(){await api('/api/auth/logout',{method:'POST'});clearSession()}
+
+/* ---------- data ---------- */
+async function loadAll(){
+  const a=await api('/api/accounts');if(a.status!==200)return;
+  S.accounts=await Promise.all((a.body.accounts||[]).map(async x=>{const b=await api('/api/accounts/balance/'+x._id);return{...x,balance:b.body.balance??0}}));
+  const t=await api('/api/transactions');S.txns=t.body.transactions||[];
+}
+async function boot(){$('#auth').classList.add('hide');$('#app').classList.remove('hide');await loadAll();go(S.view)}
+function go(v){S.view=v;document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));views[v]();scrollTo(0,0)}
+
+/* ---------- views ---------- */
+const greet=()=>{const h=new Date().getHours();return h<5?'Still up':h<12?'Good morning':h<17?'Good afternoon':'Good evening'};
+function txnInfo(t){const mine=new Set(S.accounts.map(a=>a._id)),f=mine.has(t.fromAccount),o=mine.has(t.toAccount);
+  if(f&&o)return{c:'',s:'⇄',l:'Moved between your accounts',g:''};
+  if(f)return{c:'out',s:'↑',l:'Sent to '+nameFor(t.toAccount),g:'−'};
+  return{c:'in',s:'↓',l:'Received from '+nameFor(t.fromAccount),g:'+'}}
+function dayLabel(d){const x=new Date(d),n=new Date(),y=new Date(Date.now()-864e5);
+  return x.toDateString()===n.toDateString()?'Today':x.toDateString()===y.toDateString()?'Yesterday':x.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
+function rows(list){if(!list.length)return'<div class="empty">Nothing here yet. Add money or send some to get things moving.</div>';
+  return'<div class="list">'+list.map(t=>{const i=txnInfo(t);
+  return`<div class="row ${i.c}"><div class="dot">${i.s}</div><div class="t">${esc(i.l)}${t.status!=='COMPLETED'?`<span class="pill">${esc(t.status.toLowerCase())}</span>`:''}<small>${new Date(t.createdAt).toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'})}, ${dayLabel(t.createdAt)}</small></div><div class="v">${i.g}${inr(t.amount)}</div></div>`}).join('')+'</div>'}
+
+const views={
+home(){
+  const first=(S.user?.name||'there').split(' ')[0];
+  $('#main').innerHTML=`
+  <div class="hero"><div><small>${greet()}, ${esc(first)}. Across ${S.accounts.length||0} account${S.accounts.length===1?'':'s'} you have</small>
+  <div class="amt" id="tot">${inr(0)}</div>
+  <p>${S.txns.length?'Your last move was '+dayLabel(S.txns[0].createdAt).toLowerCase()+'.':'A quiet start. Add some money to begin.'}</p></div>
+  <div class="acts"><button class="btn" onclick="addMoney()">Add money</button><button class="btn ghost" onclick="go('send')">Send</button><button class="btn ghost" onclick="newAccount()">Open another account</button></div></div>
+  <div class="grid">${S.accounts.map(a=>`<button class="acct" onclick="statement('${a._id}')"><div class="meta"><span>${a.currency} account</span><span>${a.status==='ACTIVE'?'':esc(a.status.toLowerCase())}</span></div><b>${inr(a.balance)}</b><div class="meta" style="margin-top:6px"><span>${tail(a._id)}</span><span>See statement</span></div></button>`).join('')||'<div class="empty" style="grid-column:1/-1">No accounts yet. Open one to get started.</div>'}</div>
+  <div class="sec"><h3>Recent</h3><button class="linkbtn" onclick="go('activity')">See all</button></div>
+  <div class="panel">${rows(S.txns.slice(0,5))}</div>`;
+  const to=total(),el=$('#tot'),t0=performance.now();
+  (function step(n){const p=Math.min(1,(n-t0)/700);el.textContent=inr(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step)})(t0);
+},
+send(pre={}){
+  const opts=S.accounts.map(a=>`<option value="${a._id}">${tail(a._id)}, ${inr(a.balance)}</option>`).join('');
+  const pp=payees().map(p=>`<option value="${p.id}" ${pre.to===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
+  const mine=S.accounts.map(a=>`<option value="${a._id}">My account ${tail(a._id)}</option>`).join('');
+  $('#main').innerHTML=`<h2 style="margin-bottom:16px">Send money</h2><div class="panel" style="max-width:520px">
+  <label style="margin-top:0">From</label><select id="sFrom">${opts||'<option value="">No accounts</option>'}</select>
+  <label>To</label><select id="sTo" onchange="$('#sManualRow').classList.toggle('hide',this.value!=='__m')">
+   ${pp?`<optgroup label="Your people">${pp}</optgroup>`:''}<optgroup label="Your accounts">${mine}</optgroup><option value="__m">Someone new, by account ID</option></select>
+  <div id="sManualRow" class="hide"><label>Their account ID</label><input id="sManual" placeholder="Paste the account ID"></div>
+  <label>Amount</label><input id="sAmt" type="number" min="1" step="0.01" placeholder="0.00">
+  <button class="btn dark" style="width:100%;margin-top:20px" onclick="reviewSend()">Review</button></div>`;
+},
+activity(f='all'){
+  const list=S.txns.filter(t=>{const k=txnInfo(t).c;return f==='all'||(f==='sent'&&k==='out')||(f==='received'&&k==='in')});
+  $('#main').innerHTML=`<div class="sec" style="margin-top:0"><h2>Activity</h2><div class="tabs" style="width:280px">${['all','sent','received'].map(x=>`<button class="${x===f?'on':''}" onclick="views.activity('${x}')">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</div></div><div class="panel">${rows(list)}</div>`;
+},
+people(){
+  const p=payees();
+  $('#main').innerHTML=`<h2 style="margin-bottom:16px">People</h2>
+  <div class="two" style="align-items:start"><div class="panel"><h3 style="font-size:17px">Save someone</h3><label>Name</label><input id="pName" placeholder="Maa, Rohan, Landlord">
+  <label>Their account ID</label><input id="pId"><button class="btn dark" style="margin-top:18px" onclick="addPayee()">Save person</button></div>
+  <div class="panel">${p.length?p.map(x=>`<div class="row" style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)"><div class="dot">${esc(x.name[0]||'?').toUpperCase()}</div><div class="t" style="flex:1"><b>${esc(x.name)}</b><small style="display:block;color:var(--mute)">${tail(x.id)}</small></div><button class="btn plain" onclick="go('send');views.send({to:'${x.id}'})">Send</button><button class="linkbtn" onclick="delPayee('${x.id}')">Remove</button></div>`).join(''):'<div class="empty">Nobody saved yet. Saved people show up by name when you send money.</div>'}</div></div>
+  <p style="color:var(--mute);margin-top:14px;max-width:60ch">To receive money, share the ID of any of your accounts. You can copy it from the account statement.</p>`;
+},
+lab(){
+  const o=S.accounts.map(a=>`<option value="${a._id}">${tail(a._id)}, ${inr(a.balance)}</option>`).join('');
+  $('#main').innerHTML=`<h2 style="margin-bottom:6px">Under the hood</h2><p style="color:var(--mute);margin:0 0 16px">Live checks against the backend. Each one runs a real request and tells you what came back.</p>
+  <div class="two" style="align-items:start"><div class="panel"><label style="margin-top:0">From</label><select id="lFrom">${o}</select>
+  <label>To (account ID)</label><input id="lTo" value="${S.accounts[1]?._id||''}"><label>Amount</label><input id="lAmt" type="number" value="10">
+  <div style="display:grid;gap:8px;margin-top:16px"><button class="btn plain" onclick="labIdem()">Retry the same payment twice</button><button class="btn plain" onclick="labRace()">Fire two payments at once</button><button class="btn plain" onclick="labToken()">Use a token after signing out</button></div></div>
+  <div class="panel"><pre id="labOut">Results will appear here.</pre></div></div>
+  <div class="sec"><h3>Request log</h3></div><div class="panel"><pre>${S.log.map(l=>`${String(l.s).padEnd(4)}${l.m.padEnd(6)}${l.p}  ${l.ms}ms`).join('\n')||'No requests yet.'}</pre></div>`;
+}};
+
+/* ---------- actions ---------- */
+async function newAccount(){const r=await api('/api/accounts',{method:'POST'});if(r.status===201){toast('New account opened.');await loadAll();go('home')}else toast(r.body.message||'Could not open an account.')}
+function addMoney(){
+  if(!S.accounts.length)return toast('Open an account first.');
+  openModal(`<h3>Add money</h3><label>Into</label><select id="mAcc">${S.accounts.map(a=>`<option value="${a._id}">${tail(a._id)}, ${inr(a.balance)}</option>`).join('')}</select>
+  <label>Amount</label><input id="mAmt" type="number" min="1" placeholder="0.00"><div class="chips">${[500,1000,5000,10000].map(n=>`<span class="chip" onclick="$('#mAmt').value=${n}">${inr(n)}</span>`).join('')}</div>
+  <button class="btn dark" id="mGo" style="width:100%;margin-top:22px" onclick="doAdd()">Add money</button>`)}
+async function doAdd(){
+  const toAccount=$('#mAcc').value,amount=Number($('#mAmt').value);if(!(amount>0))return toast('Enter an amount above zero.');
+  $('#mGo').disabled=true;
+  const r=await api('/api/transactions/add-money',{method:'POST',body:JSON.stringify({toAccount,amount,idempotencyKey:uid()})});
+  if(r.status===201||r.status===200){await loadAll();done('Money added',inr(amount)+' is in your account.')}else{$('#mGo').disabled=false;toast(r.body.message||'Could not add money.')}}
+function done(t,m){openModal(`<div class="tick">✓</div><h3 style="text-align:center">${esc(t)}</h3><p style="text-align:center;color:var(--mute)">${esc(m)}</p><button class="btn dark" style="width:100%" onclick="closeModal();go(S.view==='send'?'home':S.view)">Done</button>`)}
+function reviewSend(){
+  const from=$('#sFrom').value,sel=$('#sTo').value,to=(sel==='__m'?$('#sManual').value.trim():sel),amount=Number($('#sAmt').value);
+  const acc=S.accounts.find(a=>a._id===from);
+  if(!from||!to)return toast('Choose who is sending and who is receiving.');
+  if(from===to)return toast('Pick a different account to send to.');
+  if(!(amount>0))return toast('Enter an amount above zero.');
+  if(acc&&amount>acc.balance)return toast('That is more than the '+inr(acc.balance)+' in this account.');
+  openModal(`<h3>Check and confirm</h3><div class="list" style="margin:12px 0"><div class="row"><div class="t">Sending<small>from ${tail(from)}</small></div><div class="v">${inr(amount)}</div></div><div class="row"><div class="t">To<small>${esc(nameFor(to))}</small></div></div></div>
+  <div class="two"><button class="btn plain" onclick="closeModal()">Go back</button><button class="btn dark" id="cGo" onclick="doSend('${from}','${esc(to)}',${amount})">Send ${inr(amount)}</button></div>`)}
+async function doSend(from,to,amount){
+  const sig=from+'|'+to+'|'+amount;if(!S.key||S.key.sig!==sig)S.key={sig,id:uid()};
+  $('#cGo').disabled=true;
+  const r=await api('/api/transactions',{method:'POST',body:JSON.stringify({fromAccount:from,toAccount:to,amount,idempotencyKey:S.key.id})});
+  if(r.status===201||(r.status===200&&r.body.transaction)){S.key=null;await loadAll();done('Sent',inr(amount)+' is on its way to '+nameFor(to)+'.')}
+  else{$('#cGo').disabled=false;toast(r.status===0||r.status>=400&&/retry|Pending/i.test(r.body.message||'')?'That did not go through. Tapping Send again is safe, it will not charge you twice.':(r.body.message||'Could not send.'))}}
+async function statement(id){
+  openModal('<div class="empty">Loading statement...</div>');
+  const r=await api('/api/accounts/'+id+'/ledger');
+  if(r.status!==200)return openModal(`<h3>Statement</h3><p style="color:var(--mute)">${esc(r.body.message||'The statement endpoint is not available yet. Add the ledger route to your backend.')}</p><button class="btn dark" onclick="closeModal()">Close</button>`);
+  let run=0;const e=(r.body.entries||[]).map(x=>{run+=x.type==='CREDIT'?x.amount:-x.amount;return{...x,run}}).reverse();
+  openModal(`<h3>Statement</h3><p style="color:var(--mute);margin:4px 0 0;word-break:break-all">Account ID: ${id}<br><button class="linkbtn" style="padding:0;color:var(--ink);text-decoration:underline" onclick="navigator.clipboard.writeText('${id}');toast('Account ID copied.')">Copy ID</button></p>
+  <div class="list" style="margin-top:10px">${e.length?e.map(x=>`<div class="row ${x.type==='CREDIT'?'in':'out'}"><div class="dot">${x.type==='CREDIT'?'↓':'↑'}</div><div class="t">${x.type==='CREDIT'?'Money in':'Money out'}<small>balance after ${inr(x.run)}</small></div><div class="v">${x.type==='CREDIT'?'+':'−'}${inr(x.amount)}</div></div>`).join(''):'<div class="empty">No entries yet.</div>'}</div>
+  <button class="btn dark" style="width:100%;margin-top:14px" onclick="closeModal()">Close</button>`)}
+function addPayee(){const name=$('#pName').value.trim(),id=$('#pId').value.trim();if(!name||!id)return toast('Add a name and an account ID.');
+  setPayees([...payees().filter(p=>p.id!==id),{name,id}]);toast(name+' saved.');views.people()}
+function delPayee(id){setPayees(payees().filter(p=>p.id!==id));views.people()}
+
+/* ---------- proof lab ---------- */
+const lab=()=>({fromAccount:$('#lFrom').value,toAccount:$('#lTo').value.trim(),amount:Number($('#lAmt').value)});
+const out=t=>{$('#labOut').textContent=t};
+async function labIdem(){const p=lab(),k=uid();out('Running...');
+  const a=await api('/api/transactions',{method:'POST',body:JSON.stringify({...p,idempotencyKey:k})});
+  const b=await api('/api/transactions',{method:'POST',body:JSON.stringify({...p,idempotencyKey:k})});
+  out(`${b.status===200&&a.status===201?'Passed: the retry was recognised, not charged again.':'Check this: the retry may have been charged twice.'}\n\nFirst request ${a.status}: ${a.body.message}\nSame key again ${b.status}: ${b.body.message}`);await loadAll()}
+async function labRace(){const p=lab();out('Running...');
+  const [a,b]=await Promise.all([api('/api/transactions',{method:'POST',body:JSON.stringify({...p,idempotencyKey:uid()})}),api('/api/transactions',{method:'POST',body:JSON.stringify({...p,idempotencyKey:uid()})})]);
+  const ok=[a,b].filter(r=>r.status===201).length;
+  out(`${ok<2?'Passed: at most one payment succeeded.':'Both succeeded. If the balance covered only one, the account was overdrawn.'}\n\nPayment A ${a.status}: ${a.body.message}\nPayment B ${b.status}: ${b.body.message}\n\nTip: set the amount to about 60% of the balance so only one can fit.`);await loadAll()}
+async function labToken(){const old=S.token;out('Running...');await api('/api/auth/logout',{method:'POST'});
+  const r=await fetch(base()+'/api/accounts',{headers:{Authorization:'Bearer '+old}}).then(x=>x.status).catch(()=>0);
+  alert(`Old token after sign out: HTTP ${r}\n${r===401?'Passed: the blacklisted token was rejected.':'The token still worked. Check your logout route.'}`);clearSession()}
+
+/* ---------- start ---------- */
+(async()=>{S.token&&S.user?await boot():showAuth()})();
+</script>
+</body>
+</html>
