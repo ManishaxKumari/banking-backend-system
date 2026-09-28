@@ -69,4 +69,5 @@ backend-ledger/
 <img width="1372" height="890" alt="image" src="https://github.com/user-attachments/assets/29efd9c4-469e-409f-8a5a-22460ac0370f" />
 
 ## 📂 Database schema
-<img width="1326" height="782" alt="image" src="https://github.com/user-attachments/assets/9780c47e-b498-4c02-9d0d-567c12dc0831" />
+<img width="1287" height="601" alt="image" src="https://github.com/user-attachments/assets/9cbc8014-6e97-4538-8869-0afa3d4bfb6e" />
+
