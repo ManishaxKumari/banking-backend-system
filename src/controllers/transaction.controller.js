@@ -1,6 +1,7 @@
 const transactionModel = require("../models/transaction.model")
 const ledgerModel = require("../models/ledger.model")
 const accountModel = require("../models/account.model")
+const userModel = require("../models/user.model")
 const emailService = require("../services/email.service")
 const mongoose = require("mongoose")
 
@@ -327,7 +328,82 @@ async function createInitialFundsTransaction(req, res) {
     })
 }
 
+async function getUserTransactionsController(req, res) {
+    const ids = (await accountModel.find({ user: req.user._id }).select("_id")).map(a => a._id)
+    const transactions = await transactionModel
+        .find({ $or: [{ fromAccount: { $in: ids } }, { toAccount: { $in: ids } }] })
+        .sort({ createdAt: -1 }).limit(50)
+    res.status(200).json({ transactions })
+}
+
+async function addMoneyController(req, res) {
+    const { toAccount, idempotencyKey } = req.body
+    const amount = Number(req.body.amount)
+
+    if (!toAccount || !idempotencyKey || !Number.isFinite(amount) || amount <= 0 || amount > 50000) {
+        return res.status(400).json({ message: "toAccount, idempotencyKey and an amount up to 50000 are required" })
+    }
+
+    const account = await accountModel.findOne({ _id: toAccount, user: req.user._id })
+    if (!account) return res.status(404).json({ message: "Account not found" })
+
+    const existing = await transactionModel.findOne({ idempotencyKey })
+    if (existing) return res.status(200).json({ message: "Already processed", transaction: existing })
+
+    let sys = await userModel.findOne({ systemUser: true })
+    if (!sys) {
+        sys = await userModel.create({
+            name: "Hearth System",
+            email: "system@hearth.local",
+            password: "System@123",
+            systemUser: true
+        })
+    }
+
+    let sysAccount = await accountModel.findOne({ user: sys._id })
+    if (!sysAccount) {
+        sysAccount = await accountModel.create({
+            user: sys._id,
+            status: "ACTIVE",
+            currency: account.currency || "INR"
+        })
+    }
+
+    const session = await mongoose.startSession()
+    try {
+        session.startTransaction()
+
+        const [txn] = await transactionModel.create([{
+            fromAccount: sysAccount._id,
+            toAccount,
+            amount,
+            idempotencyKey,
+            status: "COMPLETED"
+        }], { session })
+
+        await ledgerModel.create([
+            { account: sysAccount._id, amount, transaction: txn._id, type: "DEBIT" },
+            { account: toAccount, amount, transaction: txn._id, type: "CREDIT" }
+        ], { session, ordered: true })
+
+        await session.commitTransaction()
+        return res.status(201).json({ message: "Money added", transaction: txn })
+    } catch (e) {
+        await session.abortTransaction()
+
+        if (e && e.code === 11000) {
+            const retryTxn = await transactionModel.findOne({ idempotencyKey })
+            return res.status(200).json({ message: "Already processed", transaction: retryTxn })
+        }
+
+        return res.status(400).json({ message: "Could not add money, please retry" })
+    } finally {
+        session.endSession()
+    }
+}
 module.exports = {
     createTransaction,
-    createInitialFundsTransaction
+    createInitialFundsTransaction,
+    getUserTransactionsController,
+    addMoneyController
 }

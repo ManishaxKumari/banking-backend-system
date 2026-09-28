@@ -20,6 +20,11 @@ const userSchema= new mongoose.Schema({
         required:[true,"password is required for creating an user"],
         minlength:[6,"password must be at least 6 characters long"],
         select:false //agar password ko query me na lana hai to select:false kar denge
+    },
+    systemUser:{
+        type:Boolean,
+        default:false,
+        select:false
     }
 },{
     timestamps:true //createdAt and updatedAt fields automatically add ho jayenge

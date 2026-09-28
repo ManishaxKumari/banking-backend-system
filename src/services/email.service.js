@@ -1,15 +1,15 @@
 const nodemailer = require('nodemailer');
 
 function logOAuthHelp() {
-    console.error('Gmail OAuth refresh token is invalid or expired (invalid_grant).');
+    console.error('Gmail authentication is invalid or expired.');
     console.error('Fix options:');
-    console.error('  1. Regenerate token: npm run generate:gmail-token');
-    console.error('  2. Or use an app password: set EMAIL_APP_PASSWORD in .env');
+    console.error('  1. Regenerate the OAuth refresh token: npm run generate:gmail-token');
+    console.error('  2. Or create a Gmail app password and set EMAIL_APP_PASSWORD in .env');
     console.error('     (Google Account > Security > 2-Step Verification > App passwords)');
 }
 
 function createTransporter() {
-    const user = process.env.EMAIL_USER;
+    const user = process.env.EMAIL_USER?.trim();
 
     if (!user) {
         console.warn('EMAIL_USER is not set — email sending is disabled.');
@@ -45,14 +45,19 @@ function createTransporter() {
     });
 }
 
-const transporter = createTransporter();
+let transporter = createTransporter();
 
 if (transporter) {
     transporter.verify((error) => {
         if (error) {
             console.error('Error connecting to email server:', error.message);
+            transporter = null;
 
-            if (error.message.includes('invalid_grant')) {
+            if (
+                error.message.includes('invalid_grant') ||
+                error.message.includes('535') ||
+                error.message.includes('Connection closed unexpectedly')
+            ) {
                 logOAuthHelp();
             }
         } else {
@@ -80,7 +85,12 @@ async function sendEmail(to, subject, text, html) {
     } catch (error) {
         console.error('Error sending email:', error.message);
 
-        if (error.message.includes('invalid_grant')) {
+        if (
+            error.message.includes('invalid_grant') ||
+            error.message.includes('535') ||
+            error.message.includes('Connection closed unexpectedly')
+        ) {
+            transporter = null;
             logOAuthHelp();
         }
     }
@@ -111,6 +121,7 @@ async function sendTransactionFailureEmail(userEmail, name, amount, toAccount) {
 }
 
 module.exports = {
+    createTransporter,
     sendRegistrationEmail,
     sendTransactionEmail,
     sendTransactionFailureEmail,
