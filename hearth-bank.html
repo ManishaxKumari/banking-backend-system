@@ -113,7 +113,7 @@ const tail=id=>id?'ending '+String(id).slice(-4):'';
 const uid=()=>'k-'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);
 const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
 let S={token:localStorage.getItem('h_token'),user:ld('h_user',null),accounts:[],txns:[],view:'home',log:[],key:null,mode:'login'};
-const base=()=>localStorage.getItem('h_base')||'http://localhost:3000';
+const base=()=>localStorage.getItem('h_base')||'https://hearth-3rwy.onrender.com';
 
 /* ---------- helpers ---------- */
 let tt;function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',3800)}
